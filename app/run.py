@@ -12,7 +12,7 @@ import nltk
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Pie
 import dill
 from sqlalchemy import create_engine
 
@@ -41,6 +41,8 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    category_distribution = df.iloc[:,4:].sum().sort_values(ascending=False)
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -61,6 +63,13 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+        {
+            'data': [Pie(
+                labels = df.iloc[:,4:].columns,
+                values = category_distribution,
+                textposition='inside'
+            )]
         }
     ]
     

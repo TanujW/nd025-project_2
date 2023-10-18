@@ -19,7 +19,6 @@ nltk.download('maxent_ne_chunker')
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report, f1_score, accuracy_score, precision_score, recall_score, make_scorer
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -90,6 +89,7 @@ def tokenize(text):
 
 
 def build_model():
+    
     pipeline = Pipeline([
     ('feature',FeatureUnion([
         ('embedding_pipeline',Pipeline([
@@ -99,10 +99,17 @@ def build_model():
         ('noun_verb_counter', NounAndVerbCounter(tokenizer=tokenize)),
         ('ner_counter', NamedEntityCounter())
     ])),
-    ('clf', MultiOutputClassifier(XGBClassifier(random_state=42, n_jobs=-1, eval_metric='aucpr', learning_rate=0.15, gamma=0.9), n_jobs=-1))
+    ('clf', MultiOutputClassifier(XGBClassifier(random_state=42, n_jobs=-1, eval_metric='aucpr'), n_jobs=-1))
 ])
     
-    return pipeline
+    params = {'clf__estimator__max_depth': [2, 4, 6, 8],
+              'clf__estimator_learning_rate': [0.01, 0.1, 0.5],
+              'clf__estimator__gamma': [0.1, 0.5, 1],
+              'clf__estimator__n_estimators': [50, 100, 200]}
+    
+    model = GridSearchCV(pipeline, params, verbose=2)
+    
+    return model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
