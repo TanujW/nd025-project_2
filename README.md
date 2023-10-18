@@ -1,5 +1,14 @@
 # Disaster Response Pipeline Project
 
+A data science project, part of rhe Udacity Data Science Nanodegree program, that focuses on building a machine learning model to classify disaster messages. The project consists of two main components: an ETL (Extract, Transform, Load) pipeline and an ML (Machine Learning) pipeline.
+
+The ETL pipeline is responsible for cleaning and preprocessing the data, which includes merging and splitting the message and category data, removing duplicates, and storing the cleaned data in a SQLite database.
+
+The ML pipeline involves training a multi-output classifier using natural language processing techniques. The pipeline includes feature extraction using TF-IDF (Term Frequency-Inverse Document Frequency) and other custom features, such as counting nouns, verbs, and named entities. The classifier used is XGBoost, which is tuned using GridSearchCV.
+
+The trained model is then saved as a pickle file for future use. The project also includes a web application where users can input disaster messages and get classification results in various categories.
+
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
@@ -19,3 +28,24 @@
     [Optional] Add `--port` to change the port to serve the app
 
 4. Go to http://0.0.0.0:3001/ or whichever `port` you are running on.
+
+
+### Project Directory Structure
+
+disaster_response_pipeline_project/
+│
+├── app/
+│   ├── templates/
+│   │   ├── go.html
+│   │   └── master.html
+│   └── run.py
+│
+├── data/
+│   ├── disaster_categories.csv
+│   ├── disaster_messages.csv
+│   ├── process_data.py
+│   └── DisasterResponse.db
+│
+└── models/
+    ├── train_classifier.py
+    └── classifier.pkl

@@ -26,6 +26,17 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from xgboost import XGBClassifier
 
 def load_data(database_filepath):
+    """
+    Load data from a SQLite database.
+
+    Parameters:
+        database_filepath (str): The file path of the SQLite database.
+
+    Returns:
+        X (Series): The input data for the model.
+        Y (DataFrame): The target data for the model.
+        category_names (list): The category names of the target data.
+    """
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql(sql=sql_text("SELECT * FROM data"), con=engine.connect())
     X = df.message
@@ -33,6 +44,9 @@ def load_data(database_filepath):
     return X, Y, Y.columns
 
 
+## Helper functions
+
+# Custom transformer for extracting number of nouns and verbs
 class NounAndVerbCounter(BaseEstimator, TransformerMixin):
     import nltk
     def get_pos_tags(self, text):
@@ -55,7 +69,9 @@ class NounAndVerbCounter(BaseEstimator, TransformerMixin):
         df['nouns'] = pd.Series(X).apply(self.count_nouns)
         df['verbs'] = pd.Series(X).apply(self.count_verbs)
         return df
-    
+   
+   
+# Custom transformer for extracting number of named entities
 class NamedEntityCounter(BaseEstimator, TransformerMixin):
     import nltk
     def count_named_entities(self, text):
@@ -71,6 +87,15 @@ class NamedEntityCounter(BaseEstimator, TransformerMixin):
         return df
 
 def tokenize(text):
+    """
+    Tokenizes the input text after removing URLs and lemmatizing the words.
+
+    Parameters:
+    - text (str): The text to be tokenized.
+
+    Returns:
+    - clean_tokens (list): A list of lemmatized tokens from the text.
+    """
     import nltk
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     detected_urls = re.findall(url_regex, text)
@@ -89,6 +114,12 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    Builds and returns a machine learning model pipeline for text classification.
+    
+    Returns:
+        model (GridSearchCV): A grid search cross-validation pipeline that combines feature extraction, transformation, and classification.
+    """
     
     pipeline = Pipeline([
     ('feature',FeatureUnion([
@@ -113,6 +144,18 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """
+    Evaluate and display the performance of the classifier.
+    
+    Args:
+        model (Sklearn model/pipeline): The trained machine learning model.
+        X_test (array-like): The test data.
+        Y_test (array-like): The true labels for the test data.
+        category_names (list): The names of the categories.
+        
+    Returns:
+        None
+    """
     y_pred = model.predict(X_test)
     print("\033[1mOverall Performance\033[0m")
     print('-'*20)
@@ -127,6 +170,16 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    """
+    Save a machine learning pipeline including custom functions to a file using dill.
+
+    Parameters:
+        model (Sklearn model/pipeline): The trained machine learning model to save.
+        model_filepath (str): The file path to save the model to.
+
+    Returns:
+        None
+    """
     ## Using dill to save custom functions used in pipeline
     with open(model_filepath, "wb") as f:
         dill.dump(model, f, protocol=pickle.HIGHEST_PROTOCOL)
