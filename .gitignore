@@ -1,0 +1,2 @@
+*.pkl
+!spec/*.pkl
