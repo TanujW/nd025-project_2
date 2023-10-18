@@ -11,11 +11,11 @@
 
 2. Go to the app directiory 
     `cd app/`
-    
+
 3. Run the following command in the app's directory to run your web app.
     `python run.py` if you have not changed the file names from above
     OR
     `python run.py --database_filepath [database_filepath] --model_filepath [model_filepath]` if you have changed the names
     [Optional] Add `--port` to change the port to serve the app
 
-4. Go to http://0.0.0.0:3001/ or whatever port you are running on.
+4. Go to http://0.0.0.0:3001/ or whichever `port` you are running on.
