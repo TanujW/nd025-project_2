@@ -32,20 +32,18 @@ The trained model is then saved as a pickle file for future use. The project als
 
 ### Project Directory Structure
 
-disaster_response_pipeline_project/
-│
-├── app/
-│   ├── templates/
-│   │   ├── go.html
-│   │   └── master.html
-│   └── run.py
-│
-├── data/
-│   ├── disaster_categories.csv
-│   ├── disaster_messages.csv
-│   ├── process_data.py
-│   └── DisasterResponse.db
-│
-└── models/
-    ├── train_classifier.py
-    └── classifier.pkl
+1. disaster_response_pipeline_project/
+    1.1. app/
+        1.1.1. templates/
+            1.1.1.1. go.html
+            1.1.1.2. master.html
+        1.1.2. run.py
+    1.2. data/
+        1.2.1. disaster_categories.csv
+        1.2.2. disaster_messages.csv
+        1.2.3. process_data.py
+        1.2.4. DisasterResponse.db
+    1.3. models/
+        1.3.1. train_classifier.py
+        1.3.2. classifier.pkl
+    1.4. README.md
